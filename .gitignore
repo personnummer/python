@@ -1,0 +1,5 @@
+.python-version
+*.pyc
+*.egg*
+/personnummer.egg-info
+nosetests.xml
