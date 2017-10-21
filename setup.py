@@ -8,7 +8,6 @@ setup(name='personnummer',
       author_email='fredrik.forsmo@gmail.com',
       license='MIT',
       packages=['personnummer'],
-      zip_safe=False,
       test_suite='nose.collector',
       tests_require=['nose'],
 )
