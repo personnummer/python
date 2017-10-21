@@ -2,6 +2,18 @@
 
 Validate Swedish social security numbers.
 
+## Installation
+
+```
+pip install personnummer
+```
+
+or
+
+```
+pip3 install personnummer
+```
+
 ## Example
 
 ```python
