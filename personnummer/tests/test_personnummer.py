@@ -4,7 +4,7 @@ from personnummer import personnummer
 class TestPersonnummer(TestCase):
     def test_with_control_digit(self):
         self.assertTrue(personnummer.valid(6403273813))
-        self.assertTrue(personnummer.valid('510818-9167'))
+        self.assertTrue(personnummer.valid('851226-2190'))
         self.assertTrue(personnummer.valid('19900101-0017'))
         self.assertTrue(personnummer.valid('19130401+2931'))
         self.assertTrue(personnummer.valid('196408233234'))

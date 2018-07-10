@@ -65,7 +65,7 @@ def valid(s):
     if len(year) == 4:
         year = year[2:]
 
-    valid = luhn(year + month + day + num) == int(check) and int(check) > 0
+    valid = luhn(year + month + day + num) == int(check)
 
     if valid and testDate(int(year), int(month), int(day)):
         return True
