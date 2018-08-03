@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='personnummer',
-      version='1.0.0',
+      version='1.0.1',
       description='Validate Swedish social security numbers',
       url='http://github.com/personnummer/python',
       author='Fredrik Forsmo',
