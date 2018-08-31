@@ -12,7 +12,6 @@ class TestPersonnummer(TestCase):
         self.assertTrue(personnummer.valid('000101-0107'))
         self.assertTrue(personnummer.valid('0001010107'))
         self.assertTrue(personnummer.valid('200002296127'))
-        self.assertTrue(personnummer.valid('200002296127'))
         self.assertTrue(personnummer.valid('200002283422'))
     
     def test_without_control_digit(self):
