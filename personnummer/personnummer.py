@@ -27,18 +27,17 @@ def luhn(s):
 
 # testDate will test if date is valid or not.
 def testDate(year, month, day):
-    try:
-        for x in ['19', '20']:
-            year = x + year.__str__()
-            year = int(year)
-            
-            date = datetime.date(year, month, day)
-            if (date.year != year or date.month != month or date.day != day) == False:
+    for x in ['19', '20']:
+        newy = x.__str__() + year.__str__()
+        newy = int(newy)
+        try:
+            date = datetime.date(newy, month, day)
+            if (date.year != newy or date.month != month or date.day != day) == False:
                 return True
-        
-        return False
-    except ValueError:
-        return False
+        except ValueError:
+            continue
+
+    return False
 
 # valid will validate Swedish social security numbers.
 def valid(s):
@@ -67,7 +66,7 @@ def valid(s):
 
     valid = luhn(year + month + day + num) == int(check)
 
-    if valid and testDate(int(year), int(month), int(day)):
+    if valid and testDate(year, int(month), int(day)):
         return True
-    
-    return valid and testDate(int(year), int(month), int(day) - 60)
+
+    return valid and testDate(year.__str__(), int(month), int(day) - 60)
