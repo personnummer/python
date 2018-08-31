@@ -69,4 +69,4 @@ def valid(s):
     if valid and testDate(year, int(month), int(day)):
         return True
 
-    return valid and testDate(year.__str__(), int(month), int(day) - 60)
+    return valid and testDate(year, int(month), int(day) - 60)
