@@ -41,8 +41,12 @@ class TestPersonnummer(TestCase):
         self.assertFalse(personnummer.valid('990919+3776'))
         self.assertFalse(personnummer.valid('990919-3776'))
         self.assertFalse(personnummer.valid('9909193776'))
-        self.assertFalse(personnummer.valid('701063-2391'))
-        self.assertFalse(personnummer.valid('640883-3231'))
+
+    def test_coordination_numbers(self):
+        self.assertTrue(personnummer.valid('701063-2391'))
+        self.assertTrue(personnummer.valid('640883-3231'))
+
+    def test_wrong_coordination_numbers(self):
         self.assertFalse(personnummer.valid('900161-0017'))
         self.assertFalse(personnummer.valid('640893-3231'))
 
@@ -57,14 +61,21 @@ class TestPersonnummer(TestCase):
         self.assertEqual('000101-0107', personnummer.format_short('0001010107'))
         self.assertEqual('000229-6127', personnummer.format_short('200002296127'))
         self.assertEqual('000228-3422', personnummer.format_short('200002283422'))
+        self.assertEqual('701063-2391', personnummer.format_short('701063-2391'))
+        self.assertEqual('640883-3231', personnummer.format_short('640883-3231'))
     def test_format_long_with_control_digit(self):
         self.assertEqual('196403273813', personnummer.format_long(6403273813))
         self.assertEqual('195108189167', personnummer.format_long('510818-9167'))
         self.assertEqual('198512262190', personnummer.format_long('851226-2190'))
         self.assertEqual('199001010017', personnummer.format_long('19900101-0017'))
         self.assertEqual('191304012931', personnummer.format_long('19130401+2931'))
+        self.assertEqual('191304012931', personnummer.format_long('130401+2931'))
+        self.assertEqual('201304012931', personnummer.format_long('1304012931'))
         self.assertEqual('196408233234', personnummer.format_long('196408233234'))
         self.assertEqual('200001010107', personnummer.format_long('000101-0107'))
         self.assertEqual('200001010107', personnummer.format_long('0001010107'))
         self.assertEqual('200002296127', personnummer.format_long('200002296127'))
         self.assertEqual('200002283422', personnummer.format_long('200002283422'))
+        self.assertEqual('197010632391', personnummer.format_long('701063-2391'))
+        self.assertEqual('196408833231', personnummer.format_long('640883-3231'))
+

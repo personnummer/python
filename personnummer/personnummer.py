@@ -53,7 +53,10 @@ def test_date(year, month, day):
 
 
 def test_in_future(century, year, month, day):
-    date = datetime.datetime(int(century.__str__() + year.__str__()), int(month), int(day))
+    try:
+        date = datetime.datetime(int(century.__str__() + year.__str__()), int(month), int(day))
+    except ValueError:
+        date = datetime.datetime(int(century.__str__() + year.__str__()), int(month), int(day) - 60)
     if date > datetime.datetime.now():
         return True
     else:
@@ -61,7 +64,10 @@ def test_in_future(century, year, month, day):
 
 
 def test_100_years_ago(century, year, month, day):
-    date = datetime.datetime(int(century.__str__() + year.__str__()), int(month), int(day))
+    try:
+        date = datetime.datetime(int(century.__str__() + year.__str__()), int(month), int(day))
+    except ValueError:
+        date = datetime.datetime(int(century.__str__() + year.__str__()), int(month), int(day) - 60)
     difference = datetime.datetime.now() - date
     difference_in_years = (difference.days + difference.seconds / 86400) / 365.2425
     if difference_in_years > 100:
