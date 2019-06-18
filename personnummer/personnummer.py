@@ -22,7 +22,7 @@ def luhn(s):
         if v > 9:
             v -= 9
         sum += v
-    
+
     return int(math.ceil(float(sum)/10) * 10 - float(sum))
 
 # testDate will test if date is valid or not.
@@ -40,7 +40,7 @@ def testDate(year, month, day):
     return False
 
 # valid will validate Swedish social security numbers.
-def valid(s):
+def valid(s, includeCoordinationNumber = True):
     if isinstance(s, string_types) is False and isinstance(s, numbers.Integral) is False:
         return False
 
@@ -68,5 +68,8 @@ def valid(s):
 
     if valid and testDate(year, int(month), int(day)):
         return True
+
+    if not includeCoordinationNumber:
+        return False
 
     return valid and testDate(year, int(month), int(day) - 60)

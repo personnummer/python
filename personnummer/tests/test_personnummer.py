@@ -13,13 +13,13 @@ class TestPersonnummer(TestCase):
         self.assertTrue(personnummer.valid('0001010107'))
         self.assertTrue(personnummer.valid('200002296127'))
         self.assertTrue(personnummer.valid('200002283422'))
-    
+
     def test_without_control_digit(self):
         self.assertFalse(personnummer.valid(640327381))
         self.assertFalse(personnummer.valid('510818-916'))
         self.assertFalse(personnummer.valid('19900101-001'))
         self.assertFalse(personnummer.valid('100101+001'))
-    
+
     def test_wrong_personnummer_or_types(self):
         self.assertFalse(personnummer.valid(None))
         self.assertFalse(personnummer.valid([]))
@@ -45,7 +45,11 @@ class TestPersonnummer(TestCase):
     def test_coordination_numbers(self):
         self.assertTrue(personnummer.valid('701063-2391'))
         self.assertTrue(personnummer.valid('640883-3231'))
-    
+
+    def test_exclude_of_coordination_numbers(self):
+        self.assertFalse(personnummer.valid('701063-2391', False))
+        self.assertFalse(personnummer.valid('640883-3231', False))
+
     def test_wrong_coordination_numbers(self):
         self.assertFalse(personnummer.valid('900161-0017'))
         self.assertFalse(personnummer.valid('640893-3231'))
