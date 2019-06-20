@@ -61,9 +61,6 @@ def valid(s, includeCoordinationNumber = True):
     if len(check) == 0:
         return False
 
-    if len(year) == 4:
-        year = year[2:]
-
     valid = luhn(year + month + day + num) == int(check)
 
     if valid and testDate(year, int(month), int(day)):
