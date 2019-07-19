@@ -26,7 +26,8 @@ def luhn(s):
     return int(math.ceil(float(sum)/10) * 10 - float(sum))
 
 # testDate will test if date is valid or not.
-def testDate(year, month, day):
+def _test_date(year, month, day):
+    """
     for x in ['19', '20']:
         newy = x.__str__() + year.__str__()
         newy = int(newy)
@@ -40,7 +41,7 @@ def testDate(year, month, day):
     return False
 
 # valid will validate Swedish social security numbers.
-def valid(s, includeCoordinationNumber = True):
+def valid(s, include_coordination_number=True):
     if isinstance(s, string_types) is False and isinstance(s, numbers.Integral) is False:
         return False
 
@@ -63,10 +64,10 @@ def valid(s, includeCoordinationNumber = True):
 
     valid = luhn(year + month + day + num) == int(check)
 
-    if valid and testDate(year, int(month), int(day)):
+    if valid and _test_date(year, int(month), int(day)):
         return True
 
-    if not includeCoordinationNumber:
+    if not include_coordination_number:
         return False
 
-    return valid and testDate(year, int(month), int(day) - 60)
+    return valid and _test_date(year, int(month), int(day) - 60)
