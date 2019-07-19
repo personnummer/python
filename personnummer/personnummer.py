@@ -18,7 +18,6 @@ def luhn(s):
     :param s:
     :return:
     """
-    v = 0
     sum = 0
 
     for i in range(0, len(s)):
