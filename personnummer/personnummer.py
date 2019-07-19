@@ -62,7 +62,7 @@ def valid(s, include_coordination_number=True):
     if isinstance(s, string_types) is False and isinstance(s, numbers.Integral) is False:
         return False
 
-    reg = "^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$"
+    reg = r"^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$"
     match = re.match(reg, s.__str__())
 
     if not match:
