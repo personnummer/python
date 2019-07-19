@@ -39,7 +39,7 @@ def _test_date(year, month, day):
         newy = int(newy)
         try:
             date = datetime.date(newy, month, day)
-            if (date.year != newy or date.month != month or date.day != day) == False:
+            if not (date.year != newy or date.month != month or date.day != day):
                 return True
         except ValueError:
             continue
