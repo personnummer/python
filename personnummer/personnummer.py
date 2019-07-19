@@ -11,8 +11,12 @@ if PY3:
 else:
     string_types = basestring
 
-# luhn will test if the given string is a valid luhn string.
 def luhn(s):
+    """
+    Test if the input string is a valid Luhn string.
+    :param s:
+    :return:
+    """
     v = 0
     sum = 0
 
@@ -25,8 +29,9 @@ def luhn(s):
 
     return int(math.ceil(float(sum)/10) * 10 - float(sum))
 
-# testDate will test if date is valid or not.
 def _test_date(year, month, day):
+    """
+    Test if the input parameters are a valid date or not
     """
     for x in ['19', '20']:
         newy = x.__str__() + year.__str__()
@@ -40,8 +45,18 @@ def _test_date(year, month, day):
 
     return False
 
-# valid will validate Swedish social security numbers.
 def valid(s, include_coordination_number=True):
+    """
+    Validate Swedish social security numbers
+
+    :param s: A Swedish social security number to validate
+    :param include_coordination_number: Set to False in order to exclude
+        coordination number (Samordningsnummer) from validation
+    :type s: str|int
+    :type include_coordination_number: bool
+    :rtype: bool
+    :return:
+    """
     if isinstance(s, string_types) is False and isinstance(s, numbers.Integral) is False:
         return False
 
