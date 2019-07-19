@@ -11,6 +11,7 @@ if PY3:
 else:
     string_types = basestring
 
+
 def luhn(s):
     """
     Test if the input string is a valid Luhn string.
@@ -29,6 +30,7 @@ def luhn(s):
 
     return int(math.ceil(float(sum)/10) * 10 - float(sum))
 
+
 def _test_date(year, month, day):
     """
     Test if the input parameters are a valid date or not
@@ -44,6 +46,7 @@ def _test_date(year, month, day):
             continue
 
     return False
+
 
 def valid(s, include_coordination_number=True):
     """

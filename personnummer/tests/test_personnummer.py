@@ -1,6 +1,7 @@
 from unittest import TestCase
 from personnummer import personnummer
 
+
 class TestPersonnummer(TestCase):
     def test_with_control_digit(self):
         self.assertTrue(personnummer.valid(6403273813))
