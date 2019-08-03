@@ -11,9 +11,13 @@ if PY3:
 else:
     string_types = basestring
 
-# luhn will test if the given string is a valid luhn string.
+
 def luhn(s):
-    v = 0
+    """
+    Test if the input string is a valid Luhn string.
+    :param s:
+    :return:
+    """
     sum = 0
 
     for i in range(0, len(s)):
@@ -25,26 +29,40 @@ def luhn(s):
 
     return int(math.ceil(float(sum)/10) * 10 - float(sum))
 
-# testDate will test if date is valid or not.
-def testDate(year, month, day):
+
+def _test_date(year, month, day):
+    """
+    Test if the input parameters are a valid date or not
+    """
     for x in ['19', '20']:
         newy = x.__str__() + year.__str__()
         newy = int(newy)
         try:
             date = datetime.date(newy, month, day)
-            if (date.year != newy or date.month != month or date.day != day) == False:
+            if not (date.year != newy or date.month != month or date.day != day):
                 return True
         except ValueError:
             continue
 
     return False
 
-# valid will validate Swedish social security numbers.
-def valid(s, includeCoordinationNumber = True):
+
+def valid(s, include_coordination_number=True):
+    """
+    Validate Swedish social security numbers
+
+    :param s: A Swedish social security number to validate
+    :param include_coordination_number: Set to False in order to exclude
+        coordination number (Samordningsnummer) from validation
+    :type s: str|int
+    :type include_coordination_number: bool
+    :rtype: bool
+    :return:
+    """
     if isinstance(s, string_types) is False and isinstance(s, numbers.Integral) is False:
         return False
 
-    reg = "^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$"
+    reg = r"^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$"
     match = re.match(reg, s.__str__())
 
     if not match:
@@ -63,10 +81,10 @@ def valid(s, includeCoordinationNumber = True):
 
     valid = luhn(year + month + day + num) == int(check)
 
-    if valid and testDate(year, int(month), int(day)):
+    if valid and _test_date(year, int(month), int(day)):
         return True
 
-    if not includeCoordinationNumber:
+    if not include_coordination_number:
         return False
 
-    return valid and testDate(year, int(month), int(day) - 60)
+    return valid and _test_date(year, int(month), int(day) - 60)
