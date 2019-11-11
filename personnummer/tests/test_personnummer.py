@@ -73,3 +73,9 @@ class TestPersonnummer(TestCase):
         self.assertEqual('200001010107', personnummer.format('000101-0107', True))
         self.assertEqual('190001010107', personnummer.format('000101+0107', True))
         self.assertRaises(ValueError, personnummer.format, "19990919_3766")
+
+    def test_format_right_separator(self):
+        self.assertEqual('130401+2931', personnummer.format('19130401-2931'))
+        self.assertEqual('900101-0017', personnummer.format('19900101+0017'))
+        self.assertEqual('121212+1212', personnummer.format('19121212-1212'))
+        self.assertEqual('121212-1212', personnummer.format('20121212+1212'))
