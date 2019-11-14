@@ -77,19 +77,15 @@ def _get_parts(ssn):
         base_year = datetime.datetime.now().year
         if sep == '+':
             base_year = base_year - 100
+        else:
+            sep = '-'
         full_year = base_year - ((base_year - int(year)) % 100)
         century = str(int(full_year / 100))
-
-    if sep == '':
-        sep = '-'
-
-    # Set the right separator to match the full year.
-    # >= 100 should use + and < 100 should use -
-    yearDiff = datetime.datetime.now().year - int(century + year)
-    if sep == '-' and yearDiff >= 100:
-        sep = '+'
-    elif sep == '+' and yearDiff < 100:
-        sep = '-'
+    else:
+        if datetime.datetime.now().year - int(century + year) < 100:
+            sep = '-'
+        else:
+            sep = '+'
 
     return {
         'century': century,
