@@ -1,8 +1,16 @@
+from datetime import datetime
 from unittest import TestCase
+
+import mock
+
 from personnummer import personnummer
 
 
+@mock.patch(
+    'personnummer.personnummer._get_current_datetime',
+    mock.Mock(return_value=datetime.fromtimestamp(1565704890)))
 class TestPersonnummer(TestCase):
+
     def test_with_control_digit(self):
         self.assertTrue(personnummer.valid(8507099805))
         self.assertTrue(personnummer.valid('198507099805'))
@@ -51,3 +59,17 @@ class TestPersonnummer(TestCase):
     def test_format_right_separator(self):
         self.assertEqual('850709-9805', personnummer.format('19850709+9805'))
         self.assertEqual('121212+1212', personnummer.format('19121212-1212'))
+
+    def test_format_with_invalid_numbers(self):
+        self.assertRaises(ValueError, personnummer.format, None)
+        self.assertRaises(ValueError, personnummer.format, [])
+        self.assertRaises(ValueError, personnummer.format, {})
+        self.assertRaises(ValueError, personnummer.format, False)
+        self.assertRaises(ValueError, personnummer.format, True)
+        self.assertRaises(ValueError, personnummer.format, 0)
+        self.assertRaises(ValueError, personnummer.format, '19112233-4455')
+        self.assertRaises(ValueError, personnummer.format, '20112233-4455')
+        self.assertRaises(ValueError, personnummer.format, '9999999999')
+        self.assertRaises(ValueError, personnummer.format, '199999999999')
+        self.assertRaises(ValueError, personnummer.format, '199909193776')
+        self.assertRaises(ValueError, personnummer.format, 'Just a string')

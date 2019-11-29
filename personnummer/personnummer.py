@@ -12,6 +12,17 @@ else:
     string_types = basestring
 
 
+def _get_current_datetime():
+    """
+    Get current time. The purpose of this function is to be able to mock
+    current time during tests
+
+    :return:
+    :rtype datetime.datetime:
+    """
+    return datetime.datetime.now()
+
+
 def luhn(s):
     """
     Calculates the Luhn checksum of a string of digits
@@ -74,7 +85,7 @@ def _get_parts(ssn):
     check = match.group(7)
 
     if not century:
-        base_year = datetime.datetime.now().year
+        base_year = _get_current_datetime().year
         if sep == '+':
             base_year = base_year - 100
         else:
@@ -82,7 +93,7 @@ def _get_parts(ssn):
         full_year = base_year - ((base_year - int(year)) % 100)
         century = str(int(full_year / 100))
     else:
-        if datetime.datetime.now().year - int(century + year) < 100:
+        if _get_current_datetime().year - int(century + year) < 100:
             sep = '-'
         else:
             sep = '+'
