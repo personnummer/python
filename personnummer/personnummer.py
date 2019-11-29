@@ -200,7 +200,10 @@ def get_age(ssn, include_coordination_number=True):
     today = _get_current_datetime()
 
     parts = _get_parts(ssn)
-    year = int('{}{}'.format(parts['century'], parts['year']))
+    year = int('{century}{year}'.format(
+        century=parts['century'],
+        year=parts['year'])
+    )
     month = int(parts['month'])
     day = int(parts['day'])
     if include_coordination_number and day > 60:
