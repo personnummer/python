@@ -73,3 +73,29 @@ class TestPersonnummer(TestCase):
         self.assertRaises(ValueError, personnummer.format, '199999999999')
         self.assertRaises(ValueError, personnummer.format, '199909193776')
         self.assertRaises(ValueError, personnummer.format, 'Just a string')
+
+    def test_get_age(self):
+        self.assertEqual(55, personnummer.get_age(6403273813))
+        self.assertEqual(67, personnummer.get_age('510818-9167'))
+        self.assertEqual(29, personnummer.get_age('19900101-0017'))
+        self.assertEqual(106, personnummer.get_age('19130401+2931'))
+        self.assertEqual(19, personnummer.get_age('200002296127'))
+
+    def test_get_age_with_coordination_number(self):
+        self.assertEqual(48, personnummer.get_age('701063-2391'))
+        self.assertEqual(54, personnummer.get_age('640883-3231'))
+        self.assertRaises(ValueError, personnummer.get_age, '701063-2391', False)
+
+    def test_get_age_with_invalid_numbers(self):
+        self.assertRaises(ValueError, personnummer.get_age, None)
+        self.assertRaises(ValueError, personnummer.get_age, [])
+        self.assertRaises(ValueError, personnummer.get_age, {})
+        self.assertRaises(ValueError, personnummer.get_age, False)
+        self.assertRaises(ValueError, personnummer.get_age, True)
+        self.assertRaises(ValueError, personnummer.get_age, 0)
+        self.assertRaises(ValueError, personnummer.get_age, '19112233-4455')
+        self.assertRaises(ValueError, personnummer.get_age, '20112233-4455')
+        self.assertRaises(ValueError, personnummer.get_age, '9999999999')
+        self.assertRaises(ValueError, personnummer.get_age, '199999999999')
+        self.assertRaises(ValueError, personnummer.get_age, '199909193776')
+        self.assertRaises(ValueError, personnummer.get_age, 'Just a string')

@@ -179,3 +179,31 @@ def format(ssn, long_format=False):
 
     parts = _get_parts(ssn)
     return ssn_format.format(**parts)
+
+
+def get_age(ssn, include_coordination_number=True):
+    """
+    Get the age of a person from a Swedish social security number
+
+    :param ssn: A Swedish social security number to format
+    :param include_coordination_number: Set to False in order to exclude
+        coordination number (Samordningsnummer) from being considered as valid
+    :type ssn: str|int
+    :rtype: int
+    :return:
+    """
+    if not valid(ssn, include_coordination_number=include_coordination_number):
+        raise ValueError(
+            'The social security number "{}" is not valid '
+            'and cannot extra the age from it.'.format(ssn)
+        )
+    today = _get_current_datetime()
+
+    parts = _get_parts(ssn)
+    year = int('{}{}'.format(parts['century'], parts['year']))
+    month = int(parts['month'])
+    day = int(parts['day'])
+    if include_coordination_number and day > 60:
+        day = day - 60
+
+    return today.year - year - ((today.month, today.day) < (month, day))
