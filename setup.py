@@ -1,6 +1,7 @@
 from setuptools import setup
 
-setup(name='personnummer',
+setup(
+      name='personnummer',
       version='1.0.2',
       description='Validate Swedish social security numbers',
       url='http://github.com/personnummer/python',
@@ -9,5 +10,5 @@ setup(name='personnummer',
       license='MIT',
       packages=['personnummer'],
       test_suite='nose.collector',
-      tests_require=['nose'],
+      tests_require=['nose', 'mock'],
 )

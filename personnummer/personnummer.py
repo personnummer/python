@@ -12,6 +12,17 @@ else:
     string_types = basestring
 
 
+def _get_current_datetime():
+    """
+    Get current time. The purpose of this function is to be able to mock
+    current time during tests
+
+    :return:
+    :rtype datetime.datetime:
+    """
+    return datetime.datetime.now()
+
+
 def luhn(s):
     """
     Calculates the Luhn checksum of a string of digits
@@ -74,7 +85,7 @@ def _get_parts(ssn):
     check = match.group(7)
 
     if not century:
-        base_year = datetime.datetime.now().year
+        base_year = _get_current_datetime().year
         if sep == '+':
             base_year = base_year - 100
         else:
@@ -82,7 +93,7 @@ def _get_parts(ssn):
         full_year = base_year - ((base_year - int(year)) % 100)
         century = str(int(full_year / 100))
     else:
-        if datetime.datetime.now().year - int(century + year) < 100:
+        if _get_current_datetime().year - int(century + year) < 100:
             sep = '-'
         else:
             sep = '+'
@@ -168,3 +179,34 @@ def format(ssn, long_format=False):
 
     parts = _get_parts(ssn)
     return ssn_format.format(**parts)
+
+
+def get_age(ssn, include_coordination_number=True):
+    """
+    Get the age of a person from a Swedish social security number
+
+    :param ssn: A Swedish social security number to format
+    :param include_coordination_number: Set to False in order to exclude
+        coordination number (Samordningsnummer) from being considered as valid
+    :type ssn: str|int
+    :rtype: int
+    :return:
+    """
+    if not valid(ssn, include_coordination_number=include_coordination_number):
+        raise ValueError(
+            'The social security number "{}" is not valid '
+            'and cannot extra the age from it.'.format(ssn)
+        )
+    today = _get_current_datetime()
+
+    parts = _get_parts(ssn)
+    year = int('{century}{year}'.format(
+        century=parts['century'],
+        year=parts['year'])
+    )
+    month = int(parts['month'])
+    day = int(parts['day'])
+    if include_coordination_number and day > 60:
+        day = day - 60
+
+    return today.year - year - ((today.month, today.day) < (month, day))

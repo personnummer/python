@@ -42,6 +42,14 @@ personnummer.format('8507099805', True)
 # => '198507099805'
 ```
 
+### Get Age
+```python
+from personnummer import personnummer
+
+personnummer.get_age(6403273813)
+# => 55
+```
+
 See [personnummer/tests/test_personnummer.py](personnummer/tests/test_personnummer.py) for more examples.
 
 ## License
