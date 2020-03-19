@@ -5,3 +5,4 @@
 *.egg*
 /personnummer.egg-info
 nosetests.xml
+venv
