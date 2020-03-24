@@ -51,51 +51,63 @@ class TestPersonnummer(TestCase):
         self.assertFalse(personnummer.valid('198567099805'))
 
     def test_format(self):
-        self.assertEqual('850709-9805', personnummer.format('19850709-9805'))
-        self.assertEqual('850709-9813', personnummer.format('198507099813'))
-        self.assertEqual('198507099805', personnummer.format('19850709-9805', True))
-        self.assertEqual('198507099813', personnummer.format('198507099813', True))
+        data = {
+            '850709-9805': '19850709-9805',
+            '850709-9813': '198507099813',
+        }
+
+        data_long = {
+            '198507099805': '19850709-9805',
+            '198507099813': '198507099813',
+        }
+
+        for ssn in data.keys():
+            tmp = personnummer.Personnummer(data[ssn])
+            self.assertEqual(ssn, tmp.format())
+
+        for ssn in data_long.keys():
+            tmp = personnummer.Personnummer(data_long[ssn])
+            self.assertEqual(ssn, tmp.format(True))
 
     def test_format_right_separator(self):
-        self.assertEqual('850709-9805', personnummer.format('19850709+9805'))
-        self.assertEqual('121212+1212', personnummer.format('19121212-1212'))
+        data = {
+            '850709-9805': '19850709+9805',
+            '121212+1212': '19121212-1212',
+        }
 
-    def test_format_with_invalid_numbers(self):
-        self.assertRaises(ValueError, personnummer.format, None)
-        self.assertRaises(ValueError, personnummer.format, [])
-        self.assertRaises(ValueError, personnummer.format, {})
-        self.assertRaises(ValueError, personnummer.format, False)
-        self.assertRaises(ValueError, personnummer.format, True)
-        self.assertRaises(ValueError, personnummer.format, 0)
-        self.assertRaises(ValueError, personnummer.format, '19112233-4455')
-        self.assertRaises(ValueError, personnummer.format, '20112233-4455')
-        self.assertRaises(ValueError, personnummer.format, '9999999999')
-        self.assertRaises(ValueError, personnummer.format, '199999999999')
-        self.assertRaises(ValueError, personnummer.format, '199909193776')
-        self.assertRaises(ValueError, personnummer.format, 'Just a string')
+        for ssn in data.keys():
+            tmp = personnummer.Personnummer(data[ssn])
+            self.assertEqual(ssn, tmp.format())
 
     def test_get_age(self):
-        self.assertEqual(55, personnummer.get_age(6403273813))
-        self.assertEqual(67, personnummer.get_age('510818-9167'))
-        self.assertEqual(29, personnummer.get_age('19900101-0017'))
-        self.assertEqual(106, personnummer.get_age('19130401+2931'))
-        self.assertEqual(19, personnummer.get_age('200002296127'))
+        data = {
+            55: 6403273813,
+            67: '510818-9167',
+            29: '19900101-0017',
+            106: '19130401+2931',
+            19: '200002296127'
+        }
 
-    def test_get_age_with_coordination_number(self):
-        self.assertEqual(48, personnummer.get_age('701063-2391'))
-        self.assertEqual(54, personnummer.get_age('640883-3231'))
-        self.assertRaises(ValueError, personnummer.get_age, '701063-2391', False)
+        for age in data.keys():
+            tmp = personnummer.Personnummer(data[age])
+            self.assertEqual(age, tmp.get_age())
 
-    def test_get_age_with_invalid_numbers(self):
-        self.assertRaises(ValueError, personnummer.get_age, None)
-        self.assertRaises(ValueError, personnummer.get_age, [])
-        self.assertRaises(ValueError, personnummer.get_age, {})
-        self.assertRaises(ValueError, personnummer.get_age, False)
-        self.assertRaises(ValueError, personnummer.get_age, True)
-        self.assertRaises(ValueError, personnummer.get_age, 0)
-        self.assertRaises(ValueError, personnummer.get_age, '19112233-4455')
-        self.assertRaises(ValueError, personnummer.get_age, '20112233-4455')
-        self.assertRaises(ValueError, personnummer.get_age, '9999999999')
-        self.assertRaises(ValueError, personnummer.get_age, '199999999999')
-        self.assertRaises(ValueError, personnummer.get_age, '199909193776')
-        self.assertRaises(ValueError, personnummer.get_age, 'Just a string')
+    def test_is_male(self):
+        data = {
+            '193903099935': True,
+            '7704089981': False,
+        }
+
+        for ssn in data.keys():
+            tmp = personnummer.Personnummer(ssn)
+            self.assertEqual(data[ssn], tmp.is_male())
+
+    def test_is_female(self):
+        data = {
+            '193903099935': False,
+            '7704089981': True,
+        }
+
+        for ssn in data.keys():
+            tmp = personnummer.Personnummer(ssn)
+            self.assertEqual(data[ssn], tmp.is_female())

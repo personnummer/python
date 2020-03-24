@@ -22,10 +22,10 @@ class Personnummer:
 
         if options is None:
             options = {}
-        self.ssn = ssn
+        self.ssn = str(ssn)
         self.options = options
 
-        if self.valid() is False:
+        if self.valid(self.ssn) is False:
             raise PersonnummerException('Not a valid Swedish social security number!')
 
     @staticmethod
@@ -58,7 +58,7 @@ class Personnummer:
         """
 
         if not self.valid():
-            raise PersonnummerException(
+            raise ValueError(
                 'The social security number "{}" is not valid '
                 'and cannot be formatted.'.format(self.ssn)
             )
@@ -71,7 +71,7 @@ class Personnummer:
         parts = self.get_parts()
         return ssn_format.format(**parts)
 
-    def getAge(self, include_coordination_number=True):
+    def get_age(self, include_coordination_number=True):
         """
         Get the age of a person from a Swedish social security number
 
@@ -99,13 +99,13 @@ class Personnummer:
 
         return today.year - year - ((today.month, today.day) < (month, day))
 
-    def isFemale(self):
-        if self.isMale():
+    def is_female(self):
+        if self.is_male():
             return False
 
         return True
 
-    def isMale(self):
+    def is_male(self):
         gender_digit = self.get_parts()['num']
 
         if int(gender_digit) % 2 == 0:
@@ -113,7 +113,7 @@ class Personnummer:
 
         return True
 
-    def isCoordinationNumber(self):
+    def is_coordination_number(self):
         parts = self.get_parts()
 
         return self.test_date(int(parts['year']), int(parts['month']), int(parts['day']))
@@ -121,13 +121,13 @@ class Personnummer:
     def valid(self, include_coordination_number=True):
         """
         Validate a Swedish social security number
-
         :param include_coordination_number: Set to False in order to exclude
             coordination number (Samordningsnummer) from validation
         :type include_coordination_number: bool
         :rtype: bool
         :return:
         """
+
         if isinstance(self.ssn, string_types) is False and isinstance(self.ssn, numbers.Integral) is False:
             return False
 
@@ -262,3 +262,10 @@ def parse(ssn, options=None):
         options = {}
     return Personnummer(ssn, options)
 
+
+def valid(ssn):
+    try:
+        parse(ssn)
+        return True
+    except PersonnummerException:
+        return False
