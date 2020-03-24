@@ -43,10 +43,6 @@ class TestPersonnummer(TestCase):
         self.assertTrue(personnummer.valid('198507699810'))
         self.assertTrue(personnummer.valid('850769-9810'))
 
-    def test_exclude_of_coordination_numbers(self):
-        self.assertFalse(personnummer.valid('198507699802'))
-        self.assertFalse(personnummer.valid('198507699810'))
-
     def test_wrong_coordination_numbers(self):
         self.assertFalse(personnummer.valid('198567099805'))
 
@@ -85,7 +81,6 @@ class TestPersonnummer(TestCase):
             67: '510818-9167',
             29: '19900101-0017',
             106: '19130401+2931',
-            19: '200002296127'
         }
 
         for age in data.keys():
@@ -94,7 +89,7 @@ class TestPersonnummer(TestCase):
 
     def test_is_male(self):
         data = {
-            '193903099935': True,
+            196608119894: True,
             '7704089981': False,
         }
 
@@ -104,7 +99,7 @@ class TestPersonnummer(TestCase):
 
     def test_is_female(self):
         data = {
-            '193903099935': False,
+            196608119894: False,
             '7704089981': True,
         }
 

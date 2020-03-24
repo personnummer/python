@@ -26,21 +26,7 @@ class Personnummer:
         self.options = options
 
         if self.valid() is False:
-            raise PersonnummerException('Not a valid Swedish social security number!')
-
-    @staticmethod
-    def parse(ssn, options=None):
-        """
-        Return an instance of the Personnummer class
-        :param ssn
-        :type ssn str/int
-        :param options
-        :type options dict
-        """
-
-        if options is None:
-            options = {}
-        return Personnummer(ssn, options)
+            raise PersonnummerException(self.ssn + ' Not a valid Swedish social security number!')
 
     def format(self, long_format=False):
         """
