@@ -25,7 +25,7 @@ class Personnummer:
         self.ssn = str(ssn)
         self.options = options
 
-        if self.valid(self.ssn) is False:
+        if self.valid() is False:
             raise PersonnummerException('Not a valid Swedish social security number!')
 
     @staticmethod
@@ -85,7 +85,7 @@ class Personnummer:
                 'The social security number "{}" is not valid '
                 'and cannot extra the age from it.'.format(self.ssn)
             )
-        today = self.get_current_datetime()
+        today = get_current_datetime()
 
         parts = self.get_parts()
         year = int('{century}{year}'.format(
@@ -116,7 +116,7 @@ class Personnummer:
     def is_coordination_number(self):
         parts = self.get_parts()
 
-        return self.test_date(int(parts['year']), int(parts['month']), int(parts['day']))
+        return test_date(int(parts['year']), int(parts['month']), int(parts['day']))
 
     def valid(self, include_coordination_number=True):
         """
@@ -147,13 +147,13 @@ class Personnummer:
 
         is_valid = self.luhn(year + month + day + num) == int(check)
 
-        if is_valid and self.test_date(int(year), int(month), int(day)):
+        if is_valid and test_date(int(year), int(month), int(day)):
             return True
 
         if not include_coordination_number:
             return False
 
-        return is_valid and self.test_date(int(year), int(month), int(day) - 60)
+        return is_valid and test_date(int(year), int(month), int(day) - 60)
 
     def get_parts(self):
         """
@@ -179,7 +179,7 @@ class Personnummer:
         check = match.group(7)
 
         if not century:
-            base_year = self.get_current_datetime().year
+            base_year = get_current_datetime().year
             if sep == '+':
                 base_year -= 100
             else:
@@ -187,7 +187,7 @@ class Personnummer:
             full_year = base_year - ((base_year - int(year)) % 100)
             century = str(int(full_year / 100))
         else:
-            if self.get_current_datetime().year - int(century + year) < 100:
+            if get_current_datetime().year - int(century + year) < 100:
                 sep = '-'
             else:
                 sep = '+'
@@ -219,34 +219,6 @@ class Personnummer:
 
         return int(math.ceil(float(calculation) / 10) * 10 - float(calculation))
 
-    @staticmethod
-    def get_current_datetime():
-        """
-        Get current time. The purpose of this function is to be able to mock
-        current time during tests
-
-        :return:
-        :rtype datetime.datetime:
-        """
-        return datetime.datetime.now()
-
-    @staticmethod
-    def test_date(year, month, day):
-        """
-        Test if the input parameters are a valid date or not
-        """
-        for x in ['19', '20']:
-            new_y = x.__str__() + year.__str__()
-            new_y = int(new_y)
-            try:
-                date = datetime.date(new_y, month, day)
-                if not (date.year != new_y or date.month != month or date.day != day):
-                    return True
-            except ValueError:
-                continue
-
-        return False
-
 
 def parse(ssn, options=None):
     """
@@ -269,3 +241,31 @@ def valid(ssn):
         return True
     except PersonnummerException:
         return False
+
+
+def get_current_datetime():
+    """
+    Get current time. The purpose of this function is to be able to mock
+    current time during tests
+
+    :return:
+    :rtype datetime.datetime:
+    """
+    return datetime.datetime.now()
+
+
+def test_date(year, month, day):
+    """
+    Test if the input parameters are a valid date or not
+    """
+    for x in ['19', '20']:
+        new_y = x.__str__() + year.__str__()
+        new_y = int(new_y)
+        try:
+            date = datetime.date(new_y, month, day)
+            if not (date.year != new_y or date.month != month or date.day != day):
+                return True
+        except ValueError:
+            continue
+
+    return False

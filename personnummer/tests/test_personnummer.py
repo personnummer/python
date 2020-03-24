@@ -7,7 +7,7 @@ from personnummer import personnummer
 
 
 @mock.patch(
-    'personnummer.personnummer._get_current_datetime',
+    'personnummer.personnummer.get_current_datetime',
     mock.Mock(return_value=datetime.fromtimestamp(1565704890)))
 class TestPersonnummer(TestCase):
 
@@ -44,8 +44,8 @@ class TestPersonnummer(TestCase):
         self.assertTrue(personnummer.valid('850769-9810'))
 
     def test_exclude_of_coordination_numbers(self):
-        self.assertFalse(personnummer.valid('198507699802', False))
-        self.assertFalse(personnummer.valid('198507699810', False))
+        self.assertFalse(personnummer.valid('198507699802'))
+        self.assertFalse(personnummer.valid('198507699810'))
 
     def test_wrong_coordination_numbers(self):
         self.assertFalse(personnummer.valid('198567099805'))
