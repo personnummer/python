@@ -62,11 +62,11 @@ class TestPersonnummer(TestCase):
         }
 
         for ssn in data.keys():
-            tmp = personnummer.Personnummer(data[ssn])
+            tmp = personnummer.parse(data[ssn])
             self.assertEqual(ssn, tmp.format())
 
         for ssn in data_long.keys():
-            tmp = personnummer.Personnummer(data_long[ssn])
+            tmp = personnummer.parse(data_long[ssn])
             self.assertEqual(ssn, tmp.format(True))
 
     def test_format_right_separator(self):
@@ -76,7 +76,7 @@ class TestPersonnummer(TestCase):
         }
 
         for ssn in data.keys():
-            tmp = personnummer.Personnummer(data[ssn])
+            tmp = personnummer.parse(data[ssn])
             self.assertEqual(ssn, tmp.format())
 
     def test_get_age(self):
@@ -89,7 +89,7 @@ class TestPersonnummer(TestCase):
         }
 
         for age in data.keys():
-            tmp = personnummer.Personnummer(data[age])
+            tmp = personnummer.parse(data[age])
             self.assertEqual(age, tmp.get_age())
 
     def test_is_male(self):
@@ -99,7 +99,7 @@ class TestPersonnummer(TestCase):
         }
 
         for ssn in data.keys():
-            tmp = personnummer.Personnummer(ssn)
+            tmp = personnummer.parse(ssn)
             self.assertEqual(data[ssn], tmp.is_male())
 
     def test_is_female(self):
@@ -109,5 +109,5 @@ class TestPersonnummer(TestCase):
         }
 
         for ssn in data.keys():
-            tmp = personnummer.Personnummer(ssn)
+            tmp = personnummer.parse(ssn)
             self.assertEqual(data[ssn], tmp.is_female())
