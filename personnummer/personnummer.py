@@ -222,6 +222,11 @@ def parse(ssn, options=None):
 
 
 def valid(ssn):
+    """
+    Checks if a ssn is a valid Swedish social security number
+    :param ssn A Swedish social security number
+    :type ssn str/int
+    """
     try:
         parse(ssn)
         return True
