@@ -131,7 +131,7 @@ class Personnummer:
         if len(check) == 0:
             return False
 
-        is_valid = self.luhn(year + month + day + num) == int(check)
+        is_valid = luhn(year + month + day + num) == int(check)
 
         if is_valid and test_date(int(year), int(month), int(day)):
             return True
@@ -188,22 +188,22 @@ class Personnummer:
             'check': check
         }
 
-    @staticmethod
-    def luhn(data):
-        """
-        Calculates the Luhn checksum of a string of digits
-        :return:
-        """
-        calculation = 0
 
-        for i in range(0, len(data)):
-            v = int(data[i])
-            v *= 2 - (i % 2)
-            if v > 9:
-                v -= 9
-            calculation += v
+def luhn(data):
+    """
+    Calculates the Luhn checksum of a string of digits
+    :return:
+    """
+    calculation = 0
 
-        return int(math.ceil(float(calculation) / 10) * 10 - float(calculation))
+    for i in range(0, len(data)):
+        v = int(data[i])
+        v *= 2 - (i % 2)
+        if v > 9:
+            v -= 9
+        calculation += v
+
+    return int(math.ceil(float(calculation) / 10) * 10 - float(calculation))
 
 
 def parse(ssn, options=None):
