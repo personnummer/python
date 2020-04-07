@@ -15,7 +15,7 @@ class Personnummer:
         """
         Initializes the Object and checks if the given Swedish social security number is valid.
         :param ssn
-        :type ssn str/int
+        :type ssn str
         :param options
         :type options dict
         """
