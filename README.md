@@ -16,6 +16,8 @@ pip3 install personnummer
 
 ## Examples
 
+- All examples that uses `personnummer.Personnumer([params])`, can be replaced with `personnummer.parse([params])`.
+
 ### Validation
 
 ```python
@@ -34,11 +36,13 @@ personnummer.valid("198507099805")
 from personnummer import personnummer
 
 # Short format
-personnummer.format(8507099805)
+pn = personnummer.Personnummer(8507099805)
+pn.format()
 # => '850709-9805'
 
 # Long format
-personnummer.format('8507099805', True)
+pn = personnummer.Personnummer('8507099805')
+pn.format(True)
 # => '198507099805'
 ```
 
@@ -46,7 +50,8 @@ personnummer.format('8507099805', True)
 ```python
 from personnummer import personnummer
 
-personnummer.get_age(6403273813)
+pn = personnummer.Personnummer(6403273813)
+pn.get_age()
 # => 55
 ```
 

@@ -3,99 +3,57 @@ from unittest import TestCase
 
 import mock
 
+import urllib.request
+import json
+
 from personnummer import personnummer
 
 
+def get_test_data():
+    response = urllib.request.urlopen('https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json')
+    raw = response.read().decode('utf-8')
+
+    list_dict = json.loads(raw)
+
+    return list_dict
+
+
+test_data = get_test_data()
+
+
 @mock.patch(
-    'personnummer.personnummer._get_current_datetime',
+    'personnummer.personnummer.get_current_datetime',
     mock.Mock(return_value=datetime.fromtimestamp(1565704890)))
 class TestPersonnummer(TestCase):
+    def valid_(self, format_type):
+        for datum in test_data:
+            self.assertEqual(personnummer.valid(datum[format_type]), datum['valid'])
 
-    def test_with_control_digit(self):
-        self.assertTrue(personnummer.valid(8507099805))
-        self.assertTrue(personnummer.valid('198507099805'))
-        self.assertTrue(personnummer.valid('198507099813'))
-        self.assertTrue(personnummer.valid('850709-9813'))
-        self.assertTrue(personnummer.valid('196411139808'))
+    def test_integer(self):
+        self.valid_('integer')
 
-    def test_without_control_digit(self):
-        self.assertFalse(personnummer.valid('19850709980'))
-        self.assertFalse(personnummer.valid('19850709981'))
-        self.assertFalse(personnummer.valid('19641113980'))
+    def test_long_format(self):
+        self.valid_('long_format')
 
-    def test_wrong_personnummer_or_types(self):
-        self.assertFalse(personnummer.valid(None))
-        self.assertFalse(personnummer.valid([]))
-        self.assertFalse(personnummer.valid({}))
-        self.assertFalse(personnummer.valid(False))
-        self.assertFalse(personnummer.valid(True))
-        self.assertFalse(personnummer.valid(0))
-        self.assertFalse(personnummer.valid('19112233-4455'))
-        self.assertFalse(personnummer.valid('20112233-4455'))
-        self.assertFalse(personnummer.valid('9999999999'))
-        self.assertFalse(personnummer.valid('199999999999'))
-        self.assertFalse(personnummer.valid('199909193776'))
-        self.assertFalse(personnummer.valid('Just a string'))
+    def test_short_format(self):
+        self.valid_('short_format')
 
-    def test_coordination_numbers(self):
-        self.assertTrue(personnummer.valid('198507699802'))
-        self.assertTrue(personnummer.valid('850769-9802'))
-        self.assertTrue(personnummer.valid('198507699810'))
-        self.assertTrue(personnummer.valid('850769-9810'))
+    def test_separated_format(self):
+        self.valid_('separated_format')
 
-    def test_exclude_of_coordination_numbers(self):
-        self.assertFalse(personnummer.valid('198507699802', False))
-        self.assertFalse(personnummer.valid('198507699810', False))
+    def test_separated_long(self):
+        self.valid_('separated_long')
 
-    def test_wrong_coordination_numbers(self):
-        self.assertFalse(personnummer.valid('198567099805'))
+    def test_is_male(self):
+        for datum in test_data:
+            if datum['valid']:
+                tmp = personnummer.parse(datum['long_format'])
+                self.assertEqual(tmp.is_male(), datum['isMale'])
 
-    def test_format(self):
-        self.assertEqual('850709-9805', personnummer.format('19850709-9805'))
-        self.assertEqual('850709-9813', personnummer.format('198507099813'))
-        self.assertEqual('198507099805', personnummer.format('19850709-9805', True))
-        self.assertEqual('198507099813', personnummer.format('198507099813', True))
+    def test_is_female(self):
+        for datum in test_data:
+            if datum['valid']:
+                tmp = personnummer.parse(datum['long_format'])
+                self.assertEqual(tmp.is_female(), datum['isFemale'])
 
-    def test_format_right_separator(self):
-        self.assertEqual('850709-9805', personnummer.format('19850709+9805'))
-        self.assertEqual('121212+1212', personnummer.format('19121212-1212'))
 
-    def test_format_with_invalid_numbers(self):
-        self.assertRaises(ValueError, personnummer.format, None)
-        self.assertRaises(ValueError, personnummer.format, [])
-        self.assertRaises(ValueError, personnummer.format, {})
-        self.assertRaises(ValueError, personnummer.format, False)
-        self.assertRaises(ValueError, personnummer.format, True)
-        self.assertRaises(ValueError, personnummer.format, 0)
-        self.assertRaises(ValueError, personnummer.format, '19112233-4455')
-        self.assertRaises(ValueError, personnummer.format, '20112233-4455')
-        self.assertRaises(ValueError, personnummer.format, '9999999999')
-        self.assertRaises(ValueError, personnummer.format, '199999999999')
-        self.assertRaises(ValueError, personnummer.format, '199909193776')
-        self.assertRaises(ValueError, personnummer.format, 'Just a string')
-
-    def test_get_age(self):
-        self.assertEqual(55, personnummer.get_age(6403273813))
-        self.assertEqual(67, personnummer.get_age('510818-9167'))
-        self.assertEqual(29, personnummer.get_age('19900101-0017'))
-        self.assertEqual(106, personnummer.get_age('19130401+2931'))
-        self.assertEqual(19, personnummer.get_age('200002296127'))
-
-    def test_get_age_with_coordination_number(self):
-        self.assertEqual(48, personnummer.get_age('701063-2391'))
-        self.assertEqual(54, personnummer.get_age('640883-3231'))
-        self.assertRaises(ValueError, personnummer.get_age, '701063-2391', False)
-
-    def test_get_age_with_invalid_numbers(self):
-        self.assertRaises(ValueError, personnummer.get_age, None)
-        self.assertRaises(ValueError, personnummer.get_age, [])
-        self.assertRaises(ValueError, personnummer.get_age, {})
-        self.assertRaises(ValueError, personnummer.get_age, False)
-        self.assertRaises(ValueError, personnummer.get_age, True)
-        self.assertRaises(ValueError, personnummer.get_age, 0)
-        self.assertRaises(ValueError, personnummer.get_age, '19112233-4455')
-        self.assertRaises(ValueError, personnummer.get_age, '20112233-4455')
-        self.assertRaises(ValueError, personnummer.get_age, '9999999999')
-        self.assertRaises(ValueError, personnummer.get_age, '199999999999')
-        self.assertRaises(ValueError, personnummer.get_age, '199909193776')
-        self.assertRaises(ValueError, personnummer.get_age, 'Just a string')
