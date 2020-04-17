@@ -22,11 +22,12 @@ class Personnummer:
 
         if options is None:
             options = {}
-        self.ssn = str(ssn)
+
         self.options = options
+        self.parts = self.get_parts(ssn)
 
         if self.valid() is False:
-            raise PersonnummerException(self.ssn + ' Not a valid Swedish social security number!')
+            raise PersonnummerException(str(ssn) + ' Not a valid Swedish social security number!')
 
     def format(self, long_format=False):
         """
@@ -43,43 +44,28 @@ class Personnummer:
         :return:
         """
 
-        if not self.valid():
-            raise ValueError(
-                'The social security number "{}" is not valid '
-                'and cannot be formatted.'.format(self.ssn)
-            )
-
         if long_format:
             ssn_format = '{century}{year}{month}{day}{num}{check}'
         else:
             ssn_format = '{year}{month}{day}{sep}{num}{check}'
 
-        parts = self.get_parts()
-        return ssn_format.format(**parts)
+        return ssn_format.format(**self.parts)
 
-    def get_age(self, include_coordination_number=True):
+    def get_age(self):
         """
         Get the age of a person from a Swedish social security number
 
-        :param include_coordination_number: Set to False in order to exclude
-            coordination number (Samordningsnummer) from being considered as valid
         :rtype: int
         :return:
         """
-        if not self.valid(include_coordination_number=include_coordination_number):
-            raise PersonnummerException(
-                'The social security number "{}" is not valid '
-                'and cannot extra the age from it.'.format(self.ssn)
-            )
         today = get_current_datetime()
 
-        parts = self.get_parts()
         year = int('{century}{year}'.format(
-            century=parts['century'],
-            year=parts['year'])
+            century=self.parts['century'],
+            year=self.parts['year'])
         )
-        month = int(parts['month'])
-        day = int(parts['day'])
+        month = int(self.parts['month'])
+        day = int(self.parts['day'])
         if include_coordination_number and day > 60:
             day -= 60
 
@@ -92,7 +78,7 @@ class Personnummer:
         return True
 
     def is_male(self):
-        gender_digit = self.get_parts()['num']
+        gender_digit = self.parts['num']
 
         if int(gender_digit) % 2 == 0:
             return False
@@ -100,48 +86,9 @@ class Personnummer:
         return True
 
     def is_coordination_number(self):
-        parts = self.get_parts()
+        return test_date(int(self.parts['year']), int(self.parts['month']), int(self.parts['day']))
 
-        return test_date(int(parts['year']), int(parts['month']), int(parts['day']))
-
-    def valid(self, include_coordination_number=True):
-        """
-        Validate a Swedish social security number
-        :param include_coordination_number: Set to False in order to exclude
-            coordination number (Samordningsnummer) from validation
-        :type include_coordination_number: bool
-        :rtype: bool
-        :return:
-        """
-
-        if isinstance(self.ssn, string_types) is False and isinstance(self.ssn, numbers.Integral) is False:
-            return False
-
-        try:
-            parts = self.get_parts()
-        except ValueError:
-            return False
-
-        year = parts['year']
-        month = parts['month']
-        day = parts['day']
-        num = parts['num']
-        check = parts['check']
-
-        if len(check) == 0:
-            return False
-
-        is_valid = luhn(year + month + day + num) == int(check)
-
-        if is_valid and test_date(int(year), int(month), int(day)):
-            return True
-
-        if not include_coordination_number:
-            return False
-
-        return is_valid and test_date(int(year), int(month), int(day) - 60)
-
-    def get_parts(self):
+    def get_parts(self, ssn):
         """
         Get different parts of a Swedish social security number
         :rtype: dict
@@ -150,7 +97,7 @@ class Personnummer:
             'century', 'year', 'month', 'day', 'sep', 'num', 'check'
         """
         reg = r"^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?(\d{3})(\d{0,1})$"
-        match = re.match(reg, str(self.ssn))
+        match = re.match(reg, str(ssn))
 
         if not match:
             raise PersonnummerException(
@@ -187,6 +134,29 @@ class Personnummer:
             'num': num,
             'check': check
         }
+
+    def valid(self):
+        """
+        Validate a Swedish social security number
+        :rtype: bool
+        :return:
+        """
+
+        year = self.parts['year']
+        month = self.parts['month']
+        day = self.parts['day']
+        num = self.parts['num']
+        check = self.parts['check']
+
+        if len(check) == 0:
+            return False
+
+        is_valid = luhn(year + month + day + num) == int(check)
+
+        if is_valid and test_date(int(year), int(month), int(day)):
+            return True
+
+        return is_valid and test_date(int(year), int(month), int(day) - 60)
 
 
 def luhn(data):
