@@ -1,6 +1,6 @@
 # personnummer [![Build Status](https://secure.travis-ci.org/personnummer/python.png?branch=master)](http://travis-ci.org/personnummer/python)
 
-Validate Swedish social security numbers.
+Validate Swedish social security numbers. Version 3+ only supports Python 3.
 
 ## Installation
 
@@ -47,12 +47,13 @@ pn.format(True)
 ```
 
 ### Get Age
+
 ```python
 from personnummer import personnummer
 
-pn = personnummer.Personnummer(6403273813)
+pn = personnummer.Personnummer("19121212+1212")
 pn.get_age()
-# => 55
+# => 106
 ```
 
 See [personnummer/tests/test_personnummer.py](personnummer/tests/test_personnummer.py) for more examples.
