@@ -56,4 +56,22 @@ class TestPersonnummer(TestCase):
                 tmp = personnummer.parse(datum['long_format'])
                 self.assertEqual(tmp.is_female(), datum['isFemale'])
 
+    def test_get_age(self):
+        self.assertEqual(34, personnummer.parse('198507099805').get_age())
+        self.assertEqual(34, personnummer.parse('198507099813').get_age())
+        self.assertEqual(54, personnummer.parse('196411139808').get_age())
+        self.assertEqual(106, personnummer.parse('19121212+1212').get_age())
+
+    def test_coordination_numbers(self):
+        p1 = personnummer.parse('198507699810')
+        self.assertEqual(34, p1.get_age())
+        self.assertEqual(True, p1.is_coordination_number())
+
+        p2 = personnummer.parse('198507699802')
+        self.assertEqual(34, p2.get_age())
+        self.assertEqual(True, p2.is_coordination_number())
+
+        p3 = personnummer.parse('198507099805')
+        self.assertEqual(34, p3.get_age())
+        self.assertEqual(False, p3.is_coordination_number())
 
