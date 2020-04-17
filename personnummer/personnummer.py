@@ -65,7 +65,7 @@ class Personnummer:
         )
         month = int(self.parts['month'])
         day = int(self.parts['day'])
-        if self.is_coordination_number() and day > 60:
+        if self.is_coordination_number():
             day -= 60
 
         return today.year - year - ((today.month, today.day) < (month, day))
@@ -85,7 +85,7 @@ class Personnummer:
         return True
 
     def is_coordination_number(self):
-        return test_date(int(self.parts['year']), int(self.parts['month']), int(self.parts['day']))
+        return test_date(int(self.parts['year']), int(self.parts['month']), int(self.parts['day']) - 60)
 
     def get_parts(self, ssn):
         """
