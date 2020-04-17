@@ -1,6 +1,5 @@
 import datetime
 import math
-import numbers
 import re
 
 string_types = str
@@ -66,7 +65,7 @@ class Personnummer:
         )
         month = int(self.parts['month'])
         day = int(self.parts['day'])
-        if include_coordination_number and day > 60:
+        if self.is_coordination_number() and day > 60:
             day -= 60
 
         return today.year - year - ((today.month, today.day) < (month, day))
