@@ -12,7 +12,7 @@ class PersonnummerException(Exception):
 class Personnummer:
     def __init__(self, ssn, options=None):
         """
-        Initializes the Object and checks if the given Swedish social security number is valid.
+        Initializes the Object and checks if the given Swedish personal identity number is valid.
         :param ssn
         :type ssn str
         :param options
@@ -26,17 +26,17 @@ class Personnummer:
         self.parts = self.get_parts(ssn)
 
         if self.valid() is False:
-            raise PersonnummerException(str(ssn) + ' Not a valid Swedish social security number!')
+            raise PersonnummerException(str(ssn) + ' Not a valid Swedish personal identity number!')
 
     def format(self, long_format=False):
         """
-        Format a Swedish social security number as one of the official formats,
+        Format a Swedish personal identity number as one of the official formats,
         A long format or a short format.
 
         This function raises a ValueError if the input number could not be parsed
-        as a valid Swedish social security number
+        as a valid Swedish personal identity number
 
-        :param long_format: Defaults to False and formats a social security number
+        :param long_format: Defaults to False and formats a personal identity number
             as YYMMDD-XXXX. If set to True the format will be YYYYMMDDXXXX.
         :type long_format: bool
         :rtype: str
@@ -52,7 +52,7 @@ class Personnummer:
 
     def get_age(self):
         """
-        Get the age of a person from a Swedish social security number
+        Get the age of a person from a Swedish personal identity number
 
         :rtype: int
         :return:
@@ -89,7 +89,7 @@ class Personnummer:
 
     def get_parts(self, ssn):
         """
-        Get different parts of a Swedish social security number
+        Get different parts of a Swedish personal identity number
         :rtype: dict
         :return: Returns a dictionary of the different parts of a Swedish SSN.
             The dict keys are:
@@ -136,7 +136,7 @@ class Personnummer:
 
     def valid(self):
         """
-        Validate a Swedish social security number
+        Validate a Swedish personal identity number
         :rtype: bool
         :return:
         """
@@ -192,8 +192,8 @@ def parse(ssn, options=None):
 
 def valid(ssn):
     """
-    Checks if a ssn is a valid Swedish social security number
-    :param ssn A Swedish social security number
+    Checks if a ssn is a valid Swedish personal identity number
+    :param ssn A Swedish personal identity number
     :type ssn str/int
     """
     try:

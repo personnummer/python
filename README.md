@@ -1,6 +1,6 @@
 # personnummer [![Build Status](https://secure.travis-ci.org/personnummer/python.png?branch=master)](http://travis-ci.org/personnummer/python)
 
-Validate Swedish social security numbers. Version 3+ only supports Python 3.
+Validate Swedish personal identity numbers. Version 3+ only supports Python 3.
 
 ## Installation
 
