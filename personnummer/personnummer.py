@@ -4,10 +4,8 @@ import re
 
 string_types = str
 
-
 class PersonnummerException(Exception):
     pass
-
 
 class Personnummer:
     def __init__(self, ssn, options=None):
