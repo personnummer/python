@@ -4,8 +4,10 @@ import re
 
 string_types = str
 
+
 class PersonnummerException(Exception):
     pass
+
 
 class Personnummer:
     def __init__(self, ssn, options=None):
@@ -24,7 +26,8 @@ class Personnummer:
         self.parts = self.get_parts(ssn)
 
         if self.valid() is False:
-            raise PersonnummerException(str(ssn) + ' Not a valid Swedish personal identity number!')
+            raise PersonnummerException(
+                str(ssn) + ' Not a valid Swedish personal identity number!')
 
     def format(self, long_format=False):
         """
