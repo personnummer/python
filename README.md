@@ -1,4 +1,4 @@
-# personnummer [![Build Status](https://secure.travis-ci.org/personnummer/python.png?branch=master)](http://travis-ci.org/personnummer/python)
+# personnummer [![Build Status](https://github.com/personnummer/python/workflows/test/badge.svg)](https://github.com/personnummer/python/actions)
 
 Validate Swedish personal identity numbers. Version 3+ only supports Python 3.
 
