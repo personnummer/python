@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
       name='personnummer',
-      version='3.0.1',
+      version='3.0.2',
       description='Validate Swedish personal identity numbers',
       url='http://github.com/personnummer/python',
       author='Personnummer and Contributors',
