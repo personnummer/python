@@ -1,77 +1,58 @@
 from datetime import datetime
 from unittest import TestCase
-
-import mock
-
+from personnummer import personnummer
 import urllib.request
 import json
-
-from personnummer import personnummer
-
 
 def get_test_data():
     response = urllib.request.urlopen('https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json')
     raw = response.read().decode('utf-8')
-
-    list_dict = json.loads(raw)
-
-    return list_dict
-
+    return json.loads(raw)
 
 test_data = get_test_data()
+availableListFormats = [
+  "long_format",
+  "short_format",
+  "separated_format",
+  "separated_long",
+]
 
-
-@mock.patch(
-    'personnummer.personnummer.get_current_datetime',
-    mock.Mock(return_value=datetime.fromtimestamp(1565704890)))
 class TestPersonnummer(TestCase):
-    def valid_(self, format_type):
-        for datum in test_data:
-            self.assertEqual(personnummer.valid(datum[format_type]), datum['valid'])
+    def testPersonnummerList(self):
+        for item in test_data:
+            for format in availableListFormats:
+                self.assertEqual(personnummer.valid(item[format]), item['valid'])
 
-    def test_integer(self):
-        self.valid_('integer')
+    def testPersonnummerFormat(self):
+        for item in test_data:
+            for format in availableListFormats:
+                if format != "short_format" and item['separated_format'].find('+') != -1:
+                    self.assertEqual(personnummer.parse(item[format]).format(), item['separated_format'])
+                    self.assertEqual(personnummer.parse(item[format]).format(True), item['long_format'])
 
-    def test_long_format(self):
-        self.valid_('long_format')
+    def testPersonnummerError(self):
+        for item in test_data:
+            for format in availableListFormats:
+                if item['valid']:
+                    return
 
-    def test_short_format(self):
-        self.valid_('short_format')
+                try:
+                    personnummer.parse(item[format])
+                    self.assertTrue(False)
+                except:
+                    self.assertTrue(True)
 
-    def test_separated_format(self):
-        self.valid_('separated_format')
+    def testPersonnummerSex(self):
+        for item in test_data:
+            for format in availableListFormats:
+                if not item['valid']:
+                    return
 
-    def test_separated_long(self):
-        self.valid_('separated_long')
+                self.assertEqual(personnummer.parse(item[format]).isMale(), item['isMale'])
+                self.assertEqual(personnummer.parse(item[format]).isFemale(), item['isFemale'])
 
-    def test_is_male(self):
-        for datum in test_data:
-            if datum['valid']:
-                tmp = personnummer.parse(datum['long_format'])
-                self.assertEqual(tmp.is_male(), datum['isMale'])
-
-    def test_is_female(self):
-        for datum in test_data:
-            if datum['valid']:
-                tmp = personnummer.parse(datum['long_format'])
-                self.assertEqual(tmp.is_female(), datum['isFemale'])
-
-    def test_get_age(self):
-        self.assertEqual(34, personnummer.parse('198507099805').get_age())
-        self.assertEqual(34, personnummer.parse('198507099813').get_age())
-        self.assertEqual(54, personnummer.parse('196411139808').get_age())
-        self.assertEqual(106, personnummer.parse('19121212+1212').get_age())
-
-    def test_coordination_numbers(self):
-        p1 = personnummer.parse('198507699810')
-        self.assertEqual(34, p1.get_age())
-        self.assertEqual(True, p1.is_coordination_number())
-
-        p2 = personnummer.parse('198507699802')
-        self.assertEqual(34, p2.get_age())
-        self.assertEqual(True, p2.is_coordination_number())
-
-        p3 = personnummer.parse('198507099805')
-        self.assertEqual(34, p3.get_age())
-        self.assertEqual(False, p3.is_coordination_number())
-
+#    def test_get_age(self):
+#        self.assertEqual(34, personnummer.parse('198507099805').get_age())
+#        self.assertEqual(34, personnummer.parse('198507099813').get_age())
+#        self.assertEqual(54, personnummer.parse('196411139808').get_age())
+#        self.assertEqual(106, personnummer.parse('19121212+1212').get_age())
