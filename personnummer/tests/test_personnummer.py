@@ -3,6 +3,7 @@ from unittest import TestCase
 from personnummer import personnummer
 import urllib.request
 import json
+import mock
 
 def get_test_data():
     response = urllib.request.urlopen('https://raw.githubusercontent.com/personnummer/meta/master/testdata/list.json')
@@ -11,10 +12,10 @@ def get_test_data():
 
 test_data = get_test_data()
 availableListFormats = [
-  "long_format",
-  "short_format",
-  "separated_format",
-  "separated_long",
+  'long_format',
+  'short_format',
+  'separated_format',
+  'separated_long',
 ]
 
 class TestPersonnummer(TestCase):
@@ -26,7 +27,7 @@ class TestPersonnummer(TestCase):
     def testPersonnummerFormat(self):
         for item in test_data:
             for format in availableListFormats:
-                if format != "short_format" and item['separated_format'].find('+') != -1:
+                if format != 'short_format' and item['separated_format'].find('+') != -1:
                     self.assertEqual(personnummer.parse(item[format]).format(), item['separated_format'])
                     self.assertEqual(personnummer.parse(item[format]).format(True), item['long_format'])
 
@@ -51,8 +52,20 @@ class TestPersonnummer(TestCase):
                 self.assertEqual(personnummer.parse(item[format]).isMale(), item['isMale'])
                 self.assertEqual(personnummer.parse(item[format]).isFemale(), item['isFemale'])
 
-#    def test_get_age(self):
-#        self.assertEqual(34, personnummer.parse('198507099805').get_age())
-#        self.assertEqual(34, personnummer.parse('198507099813').get_age())
-#        self.assertEqual(54, personnummer.parse('196411139808').get_age())
-#        self.assertEqual(106, personnummer.parse('19121212+1212').get_age())
+    def testPersonnummerAge(self):
+        for item in test_data:
+            for format in availableListFormats:
+                if format != 'short_format' and item['separated_format'].find('+') != -1:
+                    pin = item['separated_long']
+                    year = int(pin[0:4])
+                    month = int(pin[4:6])
+                    day = int(pin[6:8])
+
+                    if item['type'] == 'con':
+                        day = day - 60
+
+                    date = datetime(year=year,month=month,day=day)
+                    p = personnummer.parse(item[format])
+
+                    with mock.patch('personnummer.personnummer.get_current_datetime',mock.Mock(return_value=date)):
+                        self.assertEqual(0, p.get_age())
