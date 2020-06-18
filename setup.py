@@ -6,7 +6,7 @@ setup(
       description='Validate Swedish personal identity numbers',
       url='http://github.com/personnummer/python',
       author='Personnummer and Contributors',
-      author_email='fredrik.forsmo+personnummer@gmail.com',
+      author_email='hello@personnummer.dev',
       license='MIT',
       packages=['personnummer'],
       test_suite='nose.collector',
