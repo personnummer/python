@@ -100,7 +100,7 @@ class Personnummer:
 
         if not match:
             raise PersonnummerException(
-                'Could not parse "{}" as a valid Swedish SSN.'.format(self.ssn))
+                'Could not parse "{}" as a valid Swedish SSN.'.format(ssn))
 
         century = match.group(1)
         year = match.group(2)
