@@ -72,23 +72,18 @@ class Personnummer:
         return today.year - year - ((today.month, today.day) < (month, day))
 
     def is_female(self):
-        if self.is_male():
-            return False
-
-        return True
+        return not self.is_male()
 
     def is_male(self):
         gender_digit = self.parts['num']
 
-        if int(gender_digit) % 2 == 0:
-            return False
-
-        return True
+        return int(gender_digit) % 2 != 0
 
     def is_coordination_number(self):
         return test_date(int(self.parts['year']), int(self.parts['month']), int(self.parts['day']) - 60)
 
-    def get_parts(self, ssn):
+    @staticmethod
+    def get_parts(ssn):
         """
         Get different parts of a Swedish personal identity number
         :rtype: dict
@@ -120,11 +115,7 @@ class Personnummer:
             full_year = base_year - ((base_year - int(year)) % 100)
             century = str(int(full_year / 100))
         else:
-            if get_current_datetime().year - int(century + year) < 100:
-                sep = '-'
-            else:
-                sep = '+'
-
+            sep = '-' if get_current_datetime().year - int(century + year) < 100 else '+'
         return {
             'century': century,
             'year': year,
@@ -166,7 +157,7 @@ def luhn(data):
     """
     calculation = 0
 
-    for i in range(0, len(data)):
+    for i in range(len(data)):
         v = int(data[i])
         v *= 2 - (i % 2)
         if v > 9:
@@ -224,7 +215,7 @@ def test_date(year, month, day):
         new_y = int(new_y)
         try:
             date = datetime.date(new_y, month, day)
-            if not (date.year != new_y or date.month != month or date.day != day):
+            if date.year == new_y and date.month == month and date.day == day:
                 return True
         except ValueError:
             continue
