@@ -71,7 +71,7 @@ class TestPersonnummer(TestCase):
                     day = int(pin[6:8])
 
                     if item['type'] == 'con':
-                        day = day - 60
+                        day -= 60
 
                     date = datetime(year=year, month=month, day=day)
                     p = personnummer.parse(item[format])
