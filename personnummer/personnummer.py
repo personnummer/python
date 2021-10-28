@@ -91,7 +91,7 @@ class Personnummer:
             The dict keys are:
             'century', 'year', 'month', 'day', 'sep', 'num', 'check'
         """
-        reg = r"^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-|\+]{0,1})?((?!000)\d{3})(\d{0,1})$"
+        reg = r"^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-\+]{0,1})?((?!000)\d{3})(\d{0,1})$"
         match = re.match(reg, str(ssn))
 
         if not match:
