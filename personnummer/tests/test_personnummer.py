@@ -31,8 +31,11 @@ class TestPersonnummer(TestCase):
 
     def testPersonnummerFormat(self):
         for item in test_data:
+            if not item['valid']:
+                return
+
             for format in availableListFormats:
-                if format != 'short_format' and item['valid']:
+                if format != 'short_format':
                     self.assertEqual(personnummer.parse(
                         item[format]).format(), item['separated_format'])
                     self.assertEqual(personnummer.parse(
@@ -40,10 +43,10 @@ class TestPersonnummer(TestCase):
 
     def testPersonnummerError(self):
         for item in test_data:
-            for format in availableListFormats:
-                if item['valid']:
-                    return
+            if item['valid']:
+                return
 
+            for format in availableListFormats:
                 try:
                     personnummer.parse(item[format])
                     self.assertTrue(False)
@@ -52,10 +55,10 @@ class TestPersonnummer(TestCase):
 
     def testPersonnummerSex(self):
         for item in test_data:
-            for format in availableListFormats:
-                if not item['valid']:
-                    return
+            if not item['valid']:
+                return
 
+            for format in availableListFormats:
                 self.assertEqual(personnummer.parse(
                     item[format]).isMale(), item['isMale'])
                 self.assertEqual(personnummer.parse(
@@ -63,8 +66,11 @@ class TestPersonnummer(TestCase):
 
     def testPersonnummerAge(self):
         for item in test_data:
+            if not item['valid']:
+                return
+
             for format in availableListFormats:
-                if format != 'short_format' and item['valid']:
+                if format != 'short_format':
                     pin = item['separated_long']
                     year = int(pin[0:4])
                     month = int(pin[4:6])
