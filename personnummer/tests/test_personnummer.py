@@ -33,9 +33,6 @@ class TestPersonnummer(TestCase):
         for item in test_data:
             for format in availableListFormats:
                 if format != 'short_format' and item['valid']:
-                    print(item['separated_format'])
-                    p = personnummer.parse(item['separated_format'])
-                    print(p)
                     self.assertEqual(personnummer.parse(
                         item[format]).format(), item['separated_format'])
                     self.assertEqual(personnummer.parse(
