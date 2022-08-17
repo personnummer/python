@@ -211,7 +211,7 @@ def test_date(year, month, day):
     Test if the input parameters are a valid date or not
     """
     for x in ['19', '20']:
-        new_y = x.__str__() + year.__str__()
+        new_y = x.__str__() + year.__str__().zfill(2)
         new_y = int(new_y)
         try:
             date = datetime.date(new_y, month, day)
