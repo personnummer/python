@@ -11,4 +11,7 @@ setup(
     packages=['personnummer'],
     test_suite='nose.collector',
     tests_require=['nose', 'mock'],
+    entry_points = {
+        'console_scripts' : ['personnummer = personnummer.main:main']
+        },
 )
