@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='personnummer',
-    version='3.0.3',
+    version='3.0.4',
     description='Validate Swedish personal identity numbers',
     url='http://github.com/personnummer/python',
     author='Personnummer and Contributors',
@@ -11,7 +11,7 @@ setup(
     packages=['personnummer'],
     test_suite='nose.collector',
     tests_require=['nose', 'mock'],
-    entry_points = {
-        'console_scripts' : ['personnummer = personnummer.main:main']
-        },
+    entry_points={
+        'console_scripts': ['personnummer = personnummer.main:main']
+    },
 )
