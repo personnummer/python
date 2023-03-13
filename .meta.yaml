@@ -1,0 +1,4 @@
+name: "Python"
+maintainer: "@Buscedv"
+spec: 3
+workflow: "python.yml"
