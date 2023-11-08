@@ -23,6 +23,7 @@ class Personnummer:
             options = {}
 
         self.options = options
+        self._ssn = ssn
         self.parts = self.get_parts(ssn)
 
         if self.valid() is False:
@@ -80,7 +81,11 @@ class Personnummer:
         return int(gender_digit) % 2 != 0
 
     def is_coordination_number(self):
-        return test_date(int(self.parts['year']), int(self.parts['month']), int(self.parts['day']) - 60)
+        return test_date(
+            int(self.parts['century'] + self.parts['year']),
+            int(self.parts['month']),
+            int(self.parts['day']) - 60,
+        )
 
     @staticmethod
     def get_parts(ssn):
@@ -133,6 +138,7 @@ class Personnummer:
         :return:
         """
 
+        century = self.parts['century']
         year = self.parts['year']
         month = self.parts['month']
         day = self.parts['day']
@@ -144,10 +150,10 @@ class Personnummer:
 
         is_valid = luhn(year + month + day + num) == int(check)
 
-        if is_valid and test_date(int(year), int(month), int(day)):
+        if is_valid and test_date(int(century + year), int(month), int(day)):
             return True
 
-        return is_valid and test_date(int(year), int(month), int(day) - 60)
+        return is_valid and test_date(int(century + year), int(month), int(day) - 60)
 
 
 def luhn(data):
@@ -210,14 +216,8 @@ def test_date(year, month, day):
     """
     Test if the input parameters are a valid date or not
     """
-    for x in ['19', '20']:
-        new_y = x.__str__() + year.__str__()
-        new_y = int(new_y)
-        try:
-            date = datetime.date(new_y, month, day)
-            if date.year == new_y and date.month == month and date.day == day:
-                return True
-        except ValueError:
-            continue
-
-    return False
+    try:
+        date = datetime.date(year, month, day)
+        return date.year == year and date.month == month and date.day == day
+    except ValueError:
+        return False
