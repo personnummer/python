@@ -1,9 +1,10 @@
 from datetime import datetime
 from unittest import TestCase
+from unittest import mock
+
 from personnummer import personnummer
 import urllib.request
 import json
-import mock
 
 
 def get_test_data():

@@ -9,8 +9,8 @@ setup(
     author_email='hello@personnummer.dev',
     license='MIT',
     packages=['personnummer'],
-    test_suite='nose.collector',
-    tests_require=['nose', 'mock'],
+    test_suite='pytest',
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': ['personnummer = personnummer.main:main']
     },
