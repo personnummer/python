@@ -7,6 +7,7 @@ version = "3.1.0"
 name = "personnummer"
 description = "Validate Swedish personal identity numbers"
 license = { file = "./LICENSE" }
+readme = "README.md"
 authors = [
     { name = "Personnummer and Contributors", email = "hello@personnummer.dev" },
 ]
