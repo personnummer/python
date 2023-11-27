@@ -15,7 +15,7 @@ jobs:
       fail-fast: false
       max-parallel: 1
       matrix:
-        python-version: [3.7, 3.8, 3.9]
+        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
     steps:
     - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
     - name: Set up Python ${{ matrix.python-version }}
@@ -28,6 +28,6 @@ jobs:
         pip install -U setuptools
     - name: Run tests
       run: |
-        python setup.py clean --all
-        python setup.py install
-        python -W all setup.py test
+        pip install .[dev]
+        pytest
+        python -m build

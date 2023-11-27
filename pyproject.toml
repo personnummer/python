@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.2", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+version = "3.1.0"
+name = "personnummer"
+description = "Validate Swedish personal identity numbers"
+license = { file = "./LICENSE" }
+readme = "README.md"
+authors = [
+    { name = "Personnummer and Contributors", email = "hello@personnummer.dev" },
+]
+
+[project.urls]
+homepage = "https://personnummer.dev"
+repository = "https://github.com/personnummer/python"
+
+[project.entry-points."console_scripts"]
+personnummer = "personnummer.main:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "build",
+]
+
+[options]
+packages = ["personnummer"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.setuptools.packages.find]
+exclude = ["personnummer/tests*"]
+
+[tool.pytest.ini_options]
+testpaths = [
+    "personnummer/tests",
+]
+addopts = "-ra -v"
