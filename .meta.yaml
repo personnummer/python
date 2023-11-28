@@ -1,4 +1,4 @@
 name: "Python"
-maintainer: "@Buscedv"
+maintainer: "@dannyhajj"
 spec: 3
 workflow: "python.yml"
