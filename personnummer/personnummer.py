@@ -9,6 +9,14 @@ class PersonnummerException(Exception):
     pass
 
 
+class PersonnummerInvalidException(PersonnummerException):
+    pass
+
+
+class PersonnummerParseException(PersonnummerException):
+    pass
+
+
 class Personnummer:
     def __init__(self, ssn, options=None):
         """
@@ -24,11 +32,23 @@ class Personnummer:
 
         self.options = options
         self._ssn = ssn
-        self.parts = self.get_parts(ssn)
+        self._parse_parts(ssn)
+        self._validate()
 
-        if self.valid() is False:
-            raise PersonnummerException(
-                str(ssn) + ' Not a valid Swedish personal identity number!')
+    @property
+    def parts(self) -> dict:
+        return {
+            'century': self.century,
+            'year': self.year,
+            'month': self.month,
+            'day': self.day,
+            'sep': self.sep,
+            'num': self.num,
+            'check': self.check,
+        }
+
+    def is_coordination_number(self):
+        return int(self.day) > 60
 
     def format(self, long_format=False):
         """
@@ -50,7 +70,27 @@ class Personnummer:
         else:
             ssn_format = '{year}{month}{day}{sep}{num}{check}'
 
-        return ssn_format.format(**self.parts)
+        return ssn_format.format(
+            century=self.century,
+            year=self.year,
+            month=self.month,
+            day=self.day,
+            sep=self.sep,
+            num=self.num,
+            check=self.check,
+        )
+
+    def get_date(self):
+        """
+        Get the underlying date from a social security number
+
+        :rtype: datetime.date
+        """
+        year = int(self.full_year)
+        month = int(self.month)
+        day = int(self.day)
+        day = day - 60 if self.is_coordination_number() else day
+        return datetime.date(year, month, day)
 
     def get_age(self):
         """
@@ -59,16 +99,12 @@ class Personnummer:
         :rtype: int
         :return:
         """
-        today = get_current_datetime()
+        today = _get_current_date()
 
-        year = int('{century}{year}'.format(
-            century=self.parts['century'],
-            year=self.parts['year'])
-        )
-        month = int(self.parts['month'])
-        day = int(self.parts['day'])
-        if self.is_coordination_number():
-            day -= 60
+        year = int(self.full_year)
+        month = int(self.month)
+        day = int(self.day)
+        day = day - 60 if self.is_coordination_number() else day
 
         return today.year - year - ((today.month, today.day) < (month, day))
 
@@ -76,31 +112,21 @@ class Personnummer:
         return not self.is_male()
 
     def is_male(self):
-        gender_digit = self.parts['num']
+        gender_digit = int(self.num)
 
-        return int(gender_digit) % 2 != 0
+        return gender_digit % 2 != 0
 
-    def is_coordination_number(self):
-        return test_date(
-            int(self.parts['century'] + self.parts['year']),
-            int(self.parts['month']),
-            int(self.parts['day']) - 60,
-        )
-
-    @staticmethod
-    def get_parts(ssn):
+    def _parse_parts(self, ssn):
         """
         Get different parts of a Swedish personal identity number
-        :rtype: dict
-        :return: Returns a dictionary of the different parts of a Swedish SSN.
-            The dict keys are:
-            'century', 'year', 'month', 'day', 'sep', 'num', 'check'
+        :param ssn
+        :type ssn str|int
         """
         reg = r"^(\d{2}){0,1}(\d{2})(\d{2})(\d{2})([\-\+]{0,1})?((?!000)\d{3})(\d{0,1})$"
         match = re.match(reg, str(ssn))
 
         if not match:
-            raise PersonnummerException(
+            raise PersonnummerParseException(
                 'Could not parse "{}" as a valid Swedish SSN.'.format(ssn))
 
         century = match.group(1)
@@ -112,7 +138,7 @@ class Personnummer:
         check = match.group(7)
 
         if not century:
-            base_year = get_current_datetime().year
+            base_year = _get_current_date().year
             if sep == '+':
                 base_year -= 100
             else:
@@ -120,45 +146,53 @@ class Personnummer:
             full_year = base_year - ((base_year - int(year)) % 100)
             century = str(int(full_year / 100))
         else:
-            sep = '-' if get_current_datetime().year - int(century + year) < 100 else '+'
-        return {
-            'century': century,
-            'year': year,
-            'month': month,
-            'day': day,
-            'sep': sep,
-            'num': num,
-            'check': check
-        }
+            sep = '-' if _get_current_date().year - int(century + year) < 100 else '+'
+        
+        self.century = century
+        self.full_year = century + year
+        self.year = year
+        self.month = month
+        self.day = day
+        self.sep = sep
+        self.num = num
+        self.check = check
 
-    def valid(self):
+    def _validate(self):
         """
         Validate a Swedish personal identity number
-        :rtype: bool
+        """
+        if len(self.check) == 0:
+            raise PersonnummerInvalidException
+
+        is_valid = _luhn(self.year + self.month + self.day + self.num) == int(self.check)
+        if not is_valid:
+            raise PersonnummerInvalidException
+
+        try:
+            self.get_date()
+        except ValueError:
+            raise PersonnummerInvalidException
+
+    @staticmethod
+    def parse(ssn, options=None):
+        """
+        Returns a new Personnummer object
+        :param ssn
+        :type ssn str/int
+        :param options
+        :type options dict
+        :rtype: Personnummer
         :return:
         """
-
-        century = self.parts['century']
-        year = self.parts['year']
-        month = self.parts['month']
-        day = self.parts['day']
-        num = self.parts['num']
-        check = self.parts['check']
-
-        if len(check) == 0:
-            return False
-
-        is_valid = luhn(year + month + day + num) == int(check)
-
-        if is_valid and test_date(int(century + year), int(month), int(day)):
-            return True
-
-        return is_valid and test_date(int(century + year), int(month), int(day) - 60)
+        return Personnummer(ssn, options)
 
 
-def luhn(data):
+def _luhn(data):
     """
     Calculates the Luhn checksum of a string of digits
+    :param data
+    :type data str
+    :rtype: int
     :return:
     """
     calculation = 0
@@ -180,12 +214,10 @@ def parse(ssn, options=None):
     :type ssn str/int
     :param options
     :type options dict
-    :rtype: object
-    :return: Personnummer object
+    :rtype: Personnummer
+    :return:
     """
-    if options is None:
-        options = {}
-    return Personnummer(ssn, options)
+    return Personnummer.parse(ssn, options)
 
 
 def valid(ssn):
@@ -201,7 +233,7 @@ def valid(ssn):
         return False
 
 
-def get_current_datetime():
+def _get_current_date():
     """
     Get current time. The purpose of this function is to be able to mock
     current time during tests
@@ -209,15 +241,4 @@ def get_current_datetime():
     :return:
     :rtype datetime.datetime:
     """
-    return datetime.datetime.now()
-
-
-def test_date(year, month, day):
-    """
-    Test if the input parameters are a valid date or not
-    """
-    try:
-        date = datetime.date(year, month, day)
-        return date.year == year and date.month == month and date.day == day
-    except ValueError:
-        return False
+    return datetime.date.today()
