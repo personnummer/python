@@ -3,7 +3,7 @@ requires = ["setuptools>=61.2", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-version = "3.1.0"
+version = "3.2.0"
 name = "personnummer"
 description = "Validate Swedish personal identity numbers"
 license = { file = "./LICENSE" }

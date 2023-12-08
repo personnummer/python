@@ -46,6 +46,17 @@ pn.format(True)
 # => '198507099805'
 ```
 
+### Get Date
+_New in version 3.2.0_
+
+```python
+from personnummer import personnummer
+
+pn = personnummer.Personnummer('19121212+1212')
+pn.get_date()
+# => datetime.date(1912, 12, 12)
+```
+
 ### Get Age
 
 ```python
