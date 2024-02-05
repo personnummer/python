@@ -11,6 +11,9 @@ readme = "README.md"
 authors = [
     { name = "Personnummer and Contributors", email = "hello@personnummer.dev" },
 ]
+classifiers = [
+	"License :: OSI Approved :: MIT License",
+]
 
 [project.urls]
 homepage = "https://personnummer.dev"
