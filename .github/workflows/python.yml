@@ -1,9 +1,12 @@
-name: test
+name: Run tests
 
 on:
   push:
     branches:
       - master
+
+  # Allow running workflow manually
+  workflow_dispatch:
 
   # Run tests for any PRs.
   pull_request:
