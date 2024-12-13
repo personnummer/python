@@ -1,16 +1,19 @@
-name: test
+name: Run tests
 
 on:
   push:
     branches:
       - master
 
+  # Allow running workflow manually
+  workflow_dispatch:
+
   # Run tests for any PRs.
   pull_request:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       max-parallel: 1
