@@ -69,6 +69,10 @@ pn.get_age()
 
 See [personnummer/tests/test_personnummer.py](personnummer/tests/test_personnummer.py) for more examples.
 
+## In memoriam
+
+Fredrik "Frozzare" Forsmo (1991-2026) was the initiator, co-founder and a core contributor of the personnummer project. This library carries his work. He is missed.
+
 ## License
 
 MIT
