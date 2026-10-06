@@ -3,7 +3,7 @@ name: Run tests
 on:
   push:
     branches:
-      - master
+      - main
 
   # Allow running workflow manually
   workflow_dispatch:
